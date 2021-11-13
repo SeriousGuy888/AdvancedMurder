@@ -8,16 +8,18 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public final class AdvancedMurder extends JavaPlugin {
-//  public Logger log = Bukkit.getLogger();
+  private static JavaPlugin plugin;
+  public static JavaPlugin getPlugin() {
+    return plugin;
+  }
 
-  // <firework entity, spawned timestamp>
-  public static HashMap<Firework, Long> activeHomingMissiles = new HashMap<>();
+  public static ArrayList<Firework> activeHomingMissiles = new ArrayList<>();
 
   @Override
   public void onEnable() {
+    plugin = this;
     registerListeners();
     new TickMissiles().runTaskTimer(this, 0L, 1L);
   }

@@ -1,8 +1,9 @@
 package io.github.seriousguy888.advancedmurder.runnables;
 
 import io.github.seriousguy888.advancedmurder.AdvancedMurder;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -14,9 +15,7 @@ import java.util.stream.Collectors;
 public class TickMissiles extends BukkitRunnable {
   @Override
   public void run() {
-    AdvancedMurder.activeHomingMissiles.forEach((firework, timestamp) -> {
-      if(System.currentTimeMillis() - timestamp < 200)
-        return; // do not allow missiles to change direction for first 0.25 seconds
+    AdvancedMurder.activeHomingMissiles.forEach(firework -> {
 
       int radius = 16;
       List<Entity> nearbyEntities = firework.getNearbyEntities(radius, radius, radius)
@@ -49,8 +48,8 @@ public class TickMissiles extends BukkitRunnable {
         if(!pathClear)
           return false;
 
-        double dot = dotProduct(direction, fireworkVel);
-        double angleRad = Math.acos(dot / direction.length() * fireworkVel.length());
+        double dotProd = dot(direction, fireworkVel);
+        double angleRad = Math.acos(dotProd / (direction.length() * fireworkVel.length()));
         double angleDeg = Math.toDegrees(angleRad);
 
         return angleDeg <= 67.5;
@@ -61,8 +60,13 @@ public class TickMissiles extends BukkitRunnable {
         return;
 
 
+      Location targetLoc = targetEntity.get().getLocation();
+      if(targetEntity.get() instanceof LivingEntity) {
+        targetLoc = ((LivingEntity) targetEntity.get()).getEyeLocation();
+      }
+
 //      Vector oldDirection = firework.getVelocity();
-      Vector newDirection = targetEntity.get().getLocation().subtract(firework.getLocation()).toVector();
+      Vector newDirection = targetLoc.subtract(firework.getLocation()).toVector();
 
 
       firework.setVelocity(newDirection.normalize());
@@ -70,7 +74,7 @@ public class TickMissiles extends BukkitRunnable {
   }
 
 
-  double dotProduct(Vector a, Vector b) {
+  double dot(Vector a, Vector b) {
     return a.getX() * b.getX() +
         a.getY() * b.getY() +
         a.getZ() * b.getZ();
