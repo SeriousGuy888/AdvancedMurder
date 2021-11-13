@@ -3,17 +3,18 @@ package io.github.seriousguy888.advancedmurder;
 import io.github.seriousguy888.advancedmurder.listeners.FireworkExplodeListener;
 import io.github.seriousguy888.advancedmurder.listeners.ProjectileLaunchListener;
 import io.github.seriousguy888.advancedmurder.runnables.TickMissiles;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Firework;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.HashMap;
 
 public final class AdvancedMurder extends JavaPlugin {
 //  public Logger log = Bukkit.getLogger();
-  public static ArrayList<Firework> activeHomingMissiles = new ArrayList<>();
+
+  // <firework entity, spawned timestamp>
+  public static HashMap<Firework, Long> activeHomingMissiles = new HashMap<>();
 
   @Override
   public void onEnable() {

@@ -24,6 +24,6 @@ public class ProjectileLaunchListener implements Listener {
     if(!firework.getFireworkMeta().hasEffects()) // if firework does not have explosion effects
       return; // ie: the firework would not do damage upon exploding, then return
 
-    AdvancedMurder.activeHomingMissiles.add(firework);
+    AdvancedMurder.activeHomingMissiles.put(firework, System.currentTimeMillis());
   }
 }
