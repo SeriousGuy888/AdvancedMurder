@@ -1,6 +1,7 @@
 package io.github.seriousguy888.advancedmurder.listeners;
 
 import io.github.seriousguy888.advancedmurder.AdvancedMurder;
+import io.github.seriousguy888.advancedmurder.utils.FireworkMetaUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -55,17 +56,21 @@ public class ProjectileLaunchListener implements Listener {
 //    }
 
 
-    FireworkMeta meta = firework.getFireworkMeta();
-    PersistentDataContainer data = meta.getPersistentDataContainer();
+//    FireworkMeta meta = firework.getFireworkMeta();
+//    PersistentDataContainer data = meta.getPersistentDataContainer();
+//
+//    if(targetEntity != null) {
+//      data.set(
+//          new NamespacedKey(AdvancedMurder.getPlugin(), "target_entity_uuid"),
+//          PersistentDataType.STRING, targetEntity.getUniqueId().toString());
+//    }
+//
+//    firework.setFireworkMeta(meta);
 
     if(targetEntity != null) {
-      data.set(
-          new NamespacedKey(AdvancedMurder.getPlugin(), "target_entity_uuid"),
-          PersistentDataType.STRING, targetEntity.getUniqueId().toString());
+      FireworkMetaUtil metaUtil = new FireworkMetaUtil(firework);
+      metaUtil.setTargetUuid(targetEntity.getUniqueId().toString());
     }
-
-    firework.setFireworkMeta(meta);
-
 
     AdvancedMurder.activeHomingMissiles.add(firework);
   }

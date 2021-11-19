@@ -1,6 +1,8 @@
 package io.github.seriousguy888.advancedmurder.runnables;
 
 import io.github.seriousguy888.advancedmurder.AdvancedMurder;
+import io.github.seriousguy888.advancedmurder.utils.FireworkMetaUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,8 +19,8 @@ public class TickMissiles extends BukkitRunnable {
   public void run() {
     AdvancedMurder.activeHomingMissiles.forEach(firework -> {
 
-      int radius = 16;
-      List<Entity> nearbyEntities = firework.getNearbyEntities(radius, radius, radius)
+      int searchRadius = 16;
+      List<Entity> nearbyEntities = firework.getNearbyEntities(searchRadius, searchRadius, searchRadius)
           .stream()
           .filter(entity -> {
             Entity shooter = (Entity) firework.getShooter();
@@ -29,30 +31,22 @@ public class TickMissiles extends BukkitRunnable {
             return entity.getEntityId() != shooterId &&
                 entity instanceof Villager;
           })
-//          .sorted((a, b) -> { // sort entities from nearest to furthest
-//            double distA = firework.getLocation().subtract(a.getLocation()).length();
-//            double distB = firework.getLocation().subtract(b.getLocation()).length();
-//            return distA < distB ? 1 : 0;
-//          })
           .collect(Collectors.toList());
 
       if(nearbyEntities.size() == 0)
         return;
 
-      // find first entity where there are no blocks between it and the firework
       Optional<Entity> targetEntity = nearbyEntities.stream().filter(entity -> {
-        Vector direction = entity.getLocation().subtract(firework.getLocation()).toVector();
-        Vector fireworkVel = firework.getVelocity();
+        Location fireworkLoc = firework.getLocation();
+        Vector direction = entity.getLocation().subtract(fireworkLoc).toVector();
 
-        boolean pathClear = firework.getWorld().rayTraceBlocks(firework.getLocation(), direction, radius) == null;
+        boolean pathClear = firework.getWorld().rayTraceBlocks(fireworkLoc, direction, searchRadius) == null;
         if(!pathClear)
           return false;
 
-        double dotProd = dot(direction, fireworkVel);
-        double angleRad = Math.acos(dotProd / (direction.length() * fireworkVel.length()));
-        double angleDeg = Math.toDegrees(angleRad);
-
-        return angleDeg <= 67.5;
+        String targetUuid = new FireworkMetaUtil(firework).getTargetUuid();
+        String currUuid = entity.getUniqueId().toString();
+        return targetUuid.equals(currUuid);
       }).findFirst();
 
       // stop if the firework cannot find a target
@@ -65,8 +59,21 @@ public class TickMissiles extends BukkitRunnable {
         targetLoc = ((LivingEntity) targetEntity.get()).getEyeLocation();
       }
 
-//      Vector oldDirection = firework.getVelocity();
+      Vector oldDirection = firework.getVelocity();
       Vector newDirection = targetLoc.subtract(firework.getLocation()).toVector();
+
+      double dotProd = dot(newDirection, oldDirection);
+      double angleRad = Math.acos(dotProd / (newDirection.length() * oldDirection.length()));
+      double angleDeg = Math.toDegrees(angleRad);
+      if(angleDeg > 90)
+        return;
+
+      // I want to eventually make it so that the firework can only turn up to something
+      // like 20 deg at a time, but that it can turn in the direction of the new vector
+      // even if that would be a 90 deg turn, but it can only turn 20 deg per tick.
+      // math is difficult
+      //
+      // currently it just stops if the angle between the vectors is more than 90 deg
 
 
       firework.setVelocity(newDirection.normalize());
