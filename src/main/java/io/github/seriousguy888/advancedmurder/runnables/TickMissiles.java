@@ -46,7 +46,7 @@ public class TickMissiles extends BukkitRunnable {
 
         String targetUuid = new FireworkMetaUtil(firework).getTargetUuid();
         String currUuid = entity.getUniqueId().toString();
-        return targetUuid.equals(currUuid);
+        return targetUuid != null && targetUuid.equals(currUuid);
       }).findFirst();
 
       // stop if the firework cannot find a target
