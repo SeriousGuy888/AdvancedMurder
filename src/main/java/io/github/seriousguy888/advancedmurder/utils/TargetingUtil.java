@@ -2,6 +2,7 @@ package io.github.seriousguy888.advancedmurder.utils;
 
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.util.RayTraceResult;
@@ -17,7 +18,9 @@ public class TargetingUtil {
             player.getEyeLocation().getDirection(),
             maxDistance,
             0.5,
-            entity -> entity instanceof Villager);
+            entity -> (!entity.equals(player) &&
+                    entity instanceof LivingEntity &&
+                    !entity.isDead()));
 
     if(entityRayTraceResult == null)
       return null;
