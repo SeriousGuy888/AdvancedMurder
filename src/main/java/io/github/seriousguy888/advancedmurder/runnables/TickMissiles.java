@@ -54,11 +54,11 @@ public class TickMissiles extends BukkitRunnable {
       Vector oldDirection = firework.getVelocity();
       Vector newDirection = targetLoc.subtract(firework.getLocation()).toVector();
 
-      double dotProd = dot(newDirection, oldDirection);
-      double angleRad = Math.acos(dotProd / (newDirection.length() * oldDirection.length()));
-      double angleDeg = Math.toDegrees(angleRad);
-      if(angleDeg > 135)
-        return;
+//      double dotProd = dot(newDirection, oldDirection);
+//      double angleRad = Math.acos(dotProd / (newDirection.length() * oldDirection.length()));
+//      double angleDeg = Math.toDegrees(angleRad);
+//      if(angleDeg > 135)
+//        return;
 
       // I want to eventually make it so that the firework can only turn up to something
       // like 20 deg at a time, but that it can turn in the direction of the new vector
