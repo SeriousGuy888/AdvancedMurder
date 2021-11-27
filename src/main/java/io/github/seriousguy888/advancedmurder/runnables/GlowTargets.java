@@ -8,12 +8,12 @@ public class GlowTargets extends BukkitRunnable {
   @Override
   public void run() {
     AdvancedMurder.playersCurrentTargets.forEach((player, entity) -> {
-      GlowAPI.setGlowing(entity, true, player);
+      if(entity != null)
+        GlowAPI.setGlowing(entity, true, player);
     });
     AdvancedMurder.playersPreviousTargets.forEach((player, entity) -> {
-      if(!entity.isGlowing()) {
+      if(entity != null && !entity.isGlowing())
         GlowAPI.setGlowing(entity, false, player);
-      }
     });
   }
 }
