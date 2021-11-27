@@ -29,8 +29,8 @@ public class ProjectileLaunchListener implements Listener {
     if(targetEntity != null) {
       FireworkMetaUtil metaUtil = new FireworkMetaUtil(firework);
       metaUtil.setTargetUuid(targetEntity.getUniqueId().toString());
-    }
 
-    AdvancedMurder.activeHomingMissiles.add(firework);
+      AdvancedMurder.activeHomingMissiles.add(firework);
+    }
   }
 }
