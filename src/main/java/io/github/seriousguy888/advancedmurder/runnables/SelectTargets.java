@@ -13,11 +13,14 @@ public class SelectTargets extends BukkitRunnable {
   @Override
   public void run() {
     Bukkit.getOnlinePlayers().forEach(player -> {
+      Entity targetEntity = TargetingUtil.rayTraceTarget(player, 96);
       Entity oldTargetEntity = AdvancedMurder.playersCurrentTargets.get(player);
 
       ItemStack heldItem = player.getInventory().getItemInMainHand();
-      if(heldItem.getType() != Material.CROSSBOW)
+      if(heldItem.getType() != Material.CROSSBOW) {
+        AdvancedMurder.playersPreviousTargets.put(player, oldTargetEntity);
         return;
+      }
 
       CrossbowMeta crossbowMeta = (CrossbowMeta) heldItem.getItemMeta();
       if(crossbowMeta == null)
@@ -29,15 +32,11 @@ public class SelectTargets extends BukkitRunnable {
       }
 
 
-      Entity targetEntity = TargetingUtil.rayTraceTarget(player, 96);
-
       if(targetEntity != null && targetEntity.equals(oldTargetEntity))
         return;
 
-      if(oldTargetEntity != null)
-        AdvancedMurder.playersPreviousTargets.put(player, oldTargetEntity);
-      if(targetEntity != null)
-        AdvancedMurder.playersCurrentTargets.put(player, targetEntity);
+      AdvancedMurder.playersPreviousTargets.put(player, oldTargetEntity);
+      AdvancedMurder.playersCurrentTargets.put(player, targetEntity);
     });
   }
 }
