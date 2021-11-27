@@ -4,7 +4,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -28,14 +27,15 @@ public class TargetingUtil {
     if(entity == null)
       return null;
 
+    Vector collisionPos = entityRayTraceResult.getHitPosition();
+
     // use a raycast to determine if there are any blocks between the player at the found entity
     // if the block ray trace does not return false, ie that there a blocks between, then return null
 
-    Vector vecBetween = player.getEyeLocation().toVector().subtract(entity.getLocation().toVector());
-    double lenBetween = entity.getLocation().toVector().distance(player.getEyeLocation().toVector());
+    Vector vecBetween = player.getEyeLocation().toVector().subtract(collisionPos);
+    double lenBetween = vecBetween.length();
 
     RayTraceResult blockRayTraceResult = world.rayTraceBlocks(entity.getLocation(), vecBetween, lenBetween);
-
     if(blockRayTraceResult != null && blockRayTraceResult.getHitBlock() != null)
       return null;
 
