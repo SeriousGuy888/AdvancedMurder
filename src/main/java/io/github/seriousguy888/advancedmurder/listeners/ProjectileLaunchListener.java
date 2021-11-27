@@ -14,14 +14,10 @@ public class ProjectileLaunchListener implements Listener {
 
   @EventHandler
   public void onLaunch(ProjectileLaunchEvent event) {
-    if(!(event.getEntity() instanceof Firework))
+    if(!(event.getEntity() instanceof Firework firework))
       return;
-    Firework firework = (Firework) event.getEntity();
-
-    if(!(firework.getShooter() instanceof Player))
+    if(!(firework.getShooter() instanceof Player player))
       return;
-    Player player = (Player) firework.getShooter();
-
     if(!firework.isShotAtAngle()) // if firework is not shot from a crossbow
       return;
     if(!firework.getFireworkMeta().hasEffects()) // if firework does not have explosion effects
