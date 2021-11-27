@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 public class TickMissiles extends BukkitRunnable {
@@ -28,18 +29,17 @@ public class TickMissiles extends BukkitRunnable {
       Location targetLoc = targetEntity.getLocation();
 
       // tests if the firework's target is within searchRadius blocks without using sqrt
-//      if(!firework.getWorld().equals(targetEntity.getWorld()) ||
-//          (Math.pow(fireworkLoc.getX() - targetLoc.getX(), 2) +
-//          Math.pow(fireworkLoc.getY() - targetLoc.getY(), 2) +
-//          Math.pow(fireworkLoc.getZ() - targetLoc.getZ(), 2)) >
-//          Math.pow(searchRadius, 2))
       if(!firework.getWorld().equals(targetEntity.getWorld()) ||
-          fireworkLoc.subtract(targetLoc).length() > searchRadius)
+          (Math.pow(fireworkLoc.getX() - targetLoc.getX(), 2) +
+          Math.pow(fireworkLoc.getY() - targetLoc.getY(), 2) +
+          Math.pow(fireworkLoc.getZ() - targetLoc.getZ(), 2)) >
+          Math.pow(searchRadius, 2))
         return;
 
 
-      Vector direction = targetLoc.subtract(fireworkLoc).toVector();
-      if(firework.getWorld().rayTraceBlocks(fireworkLoc, direction, searchRadius) != null)
+      Vector direction = fireworkLoc.subtract(targetLoc).toVector();
+      RayTraceResult blockRayTraceRes = firework.getWorld().rayTraceBlocks(fireworkLoc, direction, searchRadius);
+      if(blockRayTraceRes != null && blockRayTraceRes.getHitBlock() != null)
         return;
 
 
@@ -47,7 +47,7 @@ public class TickMissiles extends BukkitRunnable {
         targetLoc = ((LivingEntity) targetEntity).getEyeLocation();
       }
 
-      Vector oldDirection = firework.getVelocity();
+//      Vector oldDirection = firework.getVelocity();
       Vector newDirection = targetLoc.subtract(firework.getLocation()).toVector();
 
 //      double dotProd = dot(newDirection, oldDirection);
