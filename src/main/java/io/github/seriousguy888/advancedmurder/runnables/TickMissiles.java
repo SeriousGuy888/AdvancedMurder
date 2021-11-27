@@ -26,26 +26,19 @@ public class TickMissiles extends BukkitRunnable {
         return;
 
       Location fireworkLoc = firework.getLocation();
-      Location targetLoc = targetEntity.getLocation();
+      Location targetLoc = targetEntity instanceof LivingEntity ?
+          ((LivingEntity) targetEntity).getEyeLocation() :
+          targetEntity.getLocation();
 
       // tests if the firework's target is within searchRadius blocks without using sqrt
-      if(!firework.getWorld().equals(targetEntity.getWorld()) ||
-          (Math.pow(fireworkLoc.getX() - targetLoc.getX(), 2) +
-          Math.pow(fireworkLoc.getY() - targetLoc.getY(), 2) +
-          Math.pow(fireworkLoc.getZ() - targetLoc.getZ(), 2)) >
-          Math.pow(searchRadius, 2))
+      if(fireworkLoc.distanceSquared(targetLoc) > Math.pow(searchRadius, 2))
         return;
 
 
-      Vector direction = fireworkLoc.subtract(targetLoc).toVector();
+      Vector direction = fireworkLoc.subtract(targetLoc).toVector().normalize();
       RayTraceResult blockRayTraceRes = firework.getWorld().rayTraceBlocks(fireworkLoc, direction, searchRadius);
       if(blockRayTraceRes != null && blockRayTraceRes.getHitBlock() != null)
         return;
-
-
-      if(targetEntity instanceof LivingEntity) {
-        targetLoc = ((LivingEntity) targetEntity).getEyeLocation();
-      }
 
 //      Vector oldDirection = firework.getVelocity();
       Vector newDirection = targetLoc.subtract(firework.getLocation()).toVector();
