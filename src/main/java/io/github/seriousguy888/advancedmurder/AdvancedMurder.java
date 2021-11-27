@@ -1,10 +1,9 @@
 package io.github.seriousguy888.advancedmurder;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import io.github.seriousguy888.advancedmurder.listeners.FireworkExplodeListener;
 import io.github.seriousguy888.advancedmurder.listeners.PlayerMoveListener;
 import io.github.seriousguy888.advancedmurder.listeners.ProjectileLaunchListener;
+import io.github.seriousguy888.advancedmurder.runnables.GlowTargets;
 import io.github.seriousguy888.advancedmurder.runnables.TickMissiles;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
@@ -21,21 +20,16 @@ public final class AdvancedMurder extends JavaPlugin {
     return plugin;
   }
 
-  private static ProtocolManager protocolManager;
-  public static ProtocolManager getProtocolManager() {
-    return protocolManager;
-  }
-
   public static ArrayList<Firework> activeHomingMissiles = new ArrayList<>();
-  public static HashMap<Player, Entity> playerTargetedEntities = new HashMap<>();
+  public static HashMap<Player, Entity> playersCurrentTargets = new HashMap<>();
+  public static HashMap<Player, Entity> playersPreviousTargets = new HashMap<>();
 
   @Override
   public void onEnable() {
     plugin = this;
-    protocolManager = ProtocolLibrary.getProtocolManager();
 
     registerListeners();
-    new TickMissiles().runTaskTimer(this, 0L, 1L);
+    registerRunnables();
   }
 
 
@@ -44,5 +38,10 @@ public final class AdvancedMurder extends JavaPlugin {
     pm.registerEvents(new FireworkExplodeListener(), this);
     pm.registerEvents(new PlayerMoveListener(), this);
     pm.registerEvents(new ProjectileLaunchListener(), this);
+  }
+
+  private void registerRunnables() {
+    new TickMissiles().runTaskTimer(this, 0L, 1L);
+    new GlowTargets().runTaskTimer(this, 0L, 1L);
   }
 }
