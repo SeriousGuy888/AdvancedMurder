@@ -1,6 +1,7 @@
 package io.github.seriousguy888.advancedmurder.runnables;
 
 import io.github.seriousguy888.advancedmurder.AdvancedMurder;
+import io.github.seriousguy888.advancedmurder.files.DataManager;
 import io.github.seriousguy888.advancedmurder.utils.TargetingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,9 +11,17 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SelectTargets extends BukkitRunnable {
+  DataManager dataManager = AdvancedMurder.getDataManager();
+
   @Override
   public void run() {
     Bukkit.getOnlinePlayers().forEach(player -> {
+
+      String key = "players." + player.getUniqueId() + ".missiles.disable_homing";
+      if(dataManager.getConfig().contains(key) && dataManager.getConfig().getBoolean(key))
+        return;
+
+
       Entity targetEntity = TargetingUtil.rayTraceTarget(player, 96);
       Entity oldTargetEntity = AdvancedMurder.playersCurrentTargets.get(player);
 

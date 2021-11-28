@@ -4,6 +4,10 @@ main: io.github.seriousguy888.advancedmurder.AdvancedMurder
 api-version: 1.17
 authors: [ SeriousGuy888 ]
 description: advanced murder methods
+commands:
+  missiles:
+    description: Missielsdkf
+    usage: /<command>
 depend: [
   GlowAPI,
   PacketListenerApi

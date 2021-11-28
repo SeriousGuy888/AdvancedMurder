@@ -1,5 +1,7 @@
 package io.github.seriousguy888.advancedmurder;
 
+import io.github.seriousguy888.advancedmurder.commands.MissilesCommand;
+import io.github.seriousguy888.advancedmurder.files.DataManager;
 import io.github.seriousguy888.advancedmurder.listeners.FireworkExplodeListener;
 import io.github.seriousguy888.advancedmurder.listeners.ProjectileLaunchListener;
 import io.github.seriousguy888.advancedmurder.runnables.GlowTargets;
@@ -20,6 +22,11 @@ public final class AdvancedMurder extends JavaPlugin {
     return plugin;
   }
 
+  public static DataManager dataManager;
+  public static DataManager getDataManager() {
+    return dataManager;
+  }
+
   public static ArrayList<Firework> activeHomingMissiles = new ArrayList<>();
   public static HashMap<Player, Entity> playersCurrentTargets = new HashMap<>();
   public static HashMap<Player, Entity> playersPreviousTargets = new HashMap<>();
@@ -27,9 +34,13 @@ public final class AdvancedMurder extends JavaPlugin {
   @Override
   public void onEnable() {
     plugin = this;
+    dataManager = new DataManager(this);
+
+    this.saveDefaultConfig();
 
     registerListeners();
     registerRunnables();
+    registerCommands();
   }
 
 
@@ -43,5 +54,10 @@ public final class AdvancedMurder extends JavaPlugin {
     new TickMissiles().runTaskTimer(this, 0L, 1L);
     new SelectTargets().runTaskTimer(this, 0L, 1L);
     new GlowTargets().runTaskTimer(this, 0L, 1L);
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  private void registerCommands() {
+    this.getCommand("missiles").setExecutor(new MissilesCommand());
   }
 }
